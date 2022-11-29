@@ -77,7 +77,7 @@ st.markdown("<p style='text-align: center; color: black;'>The parks with all thr
 
 
 add_park_selectbox = st.sidebar.selectbox(
-    'What Park did you visit?',
+    'What park have you visited in the past?',
     (parks)
 )
 
@@ -106,16 +106,17 @@ add_month_selectbox = st.sidebar.selectbox(
 
 ###multi-select instead of individual###
 
+add_similar_selectbox = st.sidebar.radio(
+    'Do you want to visit a similar park?',
+    ("Yes", "Let's try something new")
+)
 
 select_activities = st.sidebar.multiselect(
     'What are the top three activities you want to do?',
     (all_activities), max_selections = 3
 )
 
-add_similar_selectbox = st.sidebar.radio(
-    'Do you want to visit a park similar in popularity?',
-    ('Yes', 'No')
-)
+
 
 
 
