@@ -276,12 +276,14 @@ def attendance_filter(park_list, popularity, sort_by_attendance = False, drop_pe
 def park_col(counter):
     if counter['score'] == 3:
         return 'blue'
-    elif counter['score'] == 2:
-        return 'darkblue'
-    elif counter['score'] == 1:
-        return 'darkred'
-    elif counter['score'] == 0:
-        return 'darkgreen'
+    else:
+        return 'gray'
+    #elif counter['score'] == 2:
+    #    return 'darkblue'
+    #elif counter['score'] == 1:
+    #    return 'darkred'
+    #elif counter['score'] == 0:
+    #    return 'darkgreen'
     
 
 def highlight_col(x):
