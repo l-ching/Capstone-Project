@@ -193,7 +193,12 @@ def cluster(park, month, sim_or_diff):
         concat = np.concatenate((X[i], transform[i]))
         weather_sp.append(concat)
     weather_sp_arr = np.array(weather_sp)
-    KM = KMeans(n_clusters = 5, random_state = 42)
+    visualizer = KElbowVisualizer(KMeans(random_state = 42), k=(2,11), show = False)
+    visualizer.fit(weather_sp_arr)
+    optimal_k = visualizer.elbow_value_
+    
+    plt.close()
+    KM = KMeans(n_clusters = optimal_k, random_state = 42)
     #model = KM.fit(X)
     temp_labels = KM.fit_predict(weather_sp_arr)
 
@@ -283,7 +288,7 @@ def highlight_col(x):
     #copy df to new - original data are not changed
     df = x.copy()
     #set by condition
-    mask = df['score'] == 3
+    mask = df['Matches'] == 3
     df.loc[mask, :] = 'background-color: lightblue'
     # df.loc[~mask,:] = 'background-color: ""'
     df.loc[~mask,:] = 'background-color: white'
@@ -329,8 +334,9 @@ def activities_filter(lst_activities, lst_cluster, park):
     for point in range(0, len(location_list)):
         folium.Marker(location_list[point],popup=park_names[point], tooltip = park_names[point], icon=folium.Icon(color=act_loc_df["color"][point], icon_color='white', icon='star', angle=0, prefix='fa')).add_to(result_map)
     
-    #act_df = act_df.style.apply(change_df_col, axis = 1)
-    #return act_df[['Park Name', 'Activities']]
+    act_df.drop(columns = 'park', inplace = True)
+    act_df.rename(columns = {'score':'Matches'}, inplace = True)
+    act_df['Park Name'] = act_df['Park Name'].str.replace('National Park', 'NP')
     act_df = act_df.style.apply(highlight_col, axis = None)
     
     st.dataframe(act_df)
