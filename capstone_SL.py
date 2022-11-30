@@ -106,14 +106,20 @@ add_month_selectbox = st.sidebar.selectbox(
 
 ###multi-select instead of individual###
 
-add_similar_selectbox = st.sidebar.radio(
-    'Do you want to visit a similar park?',
-    ("Yes", "Let's try something new")
-)
 
 select_activities = st.sidebar.multiselect(
     'What are the top three activities you want to do?',
     (all_activities), max_selections = 3
+)
+
+add_similar_selectbox = st.sidebar.radio(
+    'Do you want to visit a similar park?',
+    ("Yes", "I will try something new")
+)
+
+add_popular_selectbox = st.sidebar.radio(
+    'Do you want to avoid crowds?',
+    ("Yes", "I do not mind crowds")
 )
 
 
@@ -215,7 +221,7 @@ def cluster(park, month, sim_or_diff):
         user_parks = temp_merged[temp_merged['k_cluster'] == user_cluster]['park'].tolist()
         # st.dataframe(user_parks.head())
         # st_folium(us_map, width = 725)
-    elif sim_or_diff == 'No':
+    elif sim_or_diff == 'I will try something new':
         user_parks = temp_merged[temp_merged['k_cluster'] != user_cluster]['park'].tolist()
         # st.dataframe(user_parks.head())
         # st_folium(us_map, width = 725)
@@ -223,6 +229,42 @@ def cluster(park, month, sim_or_diff):
     return user_parks
 
 
+
+###Sort by popularity/crowdedness of parks###
+
+
+def attendance_filter(park_list, popularity, sort_by_attendance = False, drop_percentage = 0.33):
+    park_order_dict = {'Great Smoky Mountains National Park': 1,'Grand Canyon National Park': 2,'Yosemite National Park': 3,'Yellowstone National Park': 4,'Rocky Mountain National Park': 5,'Zion National Park': 6,'Olympic National Park': 7,'Grand Teton National Park': 8,'Acadia National Park': 9,'Cuyahoga Valley National Park': 10,'Glacier National Park': 11,'Indiana Dunes National Park': 12,'Joshua Tree National Park': 13,'Bryce Canyon National Park': 14,'Hawaii Volcanoes National Park': 15,'Hot Springs National Park': 16,'Shenandoah National Park': 17,'Mount Rainier National Park': 18,'Arches National Park': 19,'New River Gorge National Park and Preserve': 20,'Haleakala National Park': 21,'Death Valley National Park': 22,'Sequoia National Park': 23,'Everglades National Park': 24,'Badlands National Park': 25,'Capitol Reef National Park': 26,'Saguaro National Park': 27,'Petrified Forest National Park': 28,'Theodore Roosevelt National Park': 29,'Mammoth Cave National Park': 30,'Wind Cave National Park': 31,'Kings Canyon National Park': 32,'Canyonlands National Park': 33,'Crater Lake National Park': 34,'Biscayne National Park': 35,'Mesa Verde National Park': 36,'White Sands National Park': 37,'Denali National Park': 38,'Glacier Bay National Park': 39,'Lassen Volcanic National Park': 40,'Redwood National Park': 41,'Virgin Islands National Park': 42,'Carlsbad Caverns National Park': 43,'Big Bend National Park': 44,'Great Sand Dunes National Park': 45,'Channel Islands National Park': 46,'Kenai Fjords National Park': 47,'Voyageurs National Park': 48,'Black Canyon of the Gunnison National Park': 49,'Pinnacles National Park': 50,'Guadalupe Mountains National Park': 51,'Congaree National Park': 52,'Great Basin National Park': 53,'Wrangell - St Elias National Park': 54,'Dry Tortugas National Park': 55,'Katmai National Park': 56,'North Cascades National Park': 57,'Isle Royale National Park': 58,'National Park of American Samoa': 59,'Lake Clark National Park': 60,'Gates Of The Arctic National Park': 61,'Kobuk Valley National Park': 62}
+    ###new###
+    less_busy_parks ={}
+    for key, value in park_order_dict.items():
+        if value > 20:
+            less_busy_parks[key] = value
+    # print(less_busy_parks)
+    less_busy_parks_list = list(less_busy_parks.keys())
+ 
+    full_park_list = list(park_order_dict.keys())
+
+    if popularity == 'I do not mind crowds':
+        ordered_input_parks = full_park_list
+        # print(ordered_input_parks)
+    edit_list = []
+    if popularity == 'Yes':
+        for park in park_list:
+            if park in less_busy_parks_list:
+                edit_list.append(park)
+        ordered_input_parks = edit_list
+        
+        # print(ordered_input_parks)
+    #next line always rounds UP the number of parks to drop. We could change it, but I think that's acceptable.
+    drop_n_parks = int(len(park_list) * drop_percentage) + 1
+    ordered_input_parks = ordered_input_parks[:len(ordered_input_parks)-drop_n_parks]
+
+    if sort_by_attendance:
+        return ordered_input_parks
+    else:
+        park_list = [park for park in park_list if park in ordered_input_parks]
+        return park_list
 
 # highlight most similar parks
 
@@ -251,7 +293,7 @@ def highlight_col(x):
 ###activities filter to return final dataframe and map###
 
 def activities_filter(lst_activities, lst_cluster, park):
-    '''Input user activties, results from cluster fxn, user park, return final park map, activities df'''
+    '''Input user activities, results from cluster fxn, user park, return final park map, activities df'''
     act_df = activities.merge(locations, how = 'left', left_on = 'park', right_on = 'Park Code')[['park', 'Park Name','cleaned']]
     user_acts = act_df[act_df['Park Name'].isin(lst_cluster)]
     # rank parks based on count of user activities 
@@ -302,5 +344,7 @@ def activities_filter(lst_activities, lst_cluster, park):
 lst_activities = select_activities
 clus_results = cluster(add_park_selectbox, add_month_selectbox, add_similar_selectbox)
 
+pop_results = attendance_filter(clus_results, add_popular_selectbox, sort_by_attendance = False, drop_percentage=0.33)
+
 # rank on attendance?
-activities_filter(lst_activities, clus_results, add_park_selectbox)
+activities_filter(lst_activities, pop_results, add_park_selectbox)
