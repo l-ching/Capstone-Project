@@ -238,7 +238,7 @@ def attendance_filter(park_list, popularity, sort_by_attendance = False, drop_pe
     ###new###
     less_busy_parks ={}
     for key, value in park_order_dict.items():
-        if value > 20:
+        if value > 15:
             less_busy_parks[key] = value
     # print(less_busy_parks)
     less_busy_parks_list = list(less_busy_parks.keys())
