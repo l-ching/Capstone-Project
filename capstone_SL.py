@@ -197,7 +197,7 @@ def cluster(park, month, sim_or_diff):
     visualizer.fit(weather_sp_arr)
     optimal_k = visualizer.elbow_value_
     
-    plt.close()
+    #plt.close()
     KM = KMeans(n_clusters = optimal_k, random_state = 42)
     #model = KM.fit(X)
     temp_labels = KM.fit_predict(weather_sp_arr)
