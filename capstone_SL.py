@@ -222,7 +222,7 @@ def cluster(park, month, sim_or_diff):
     user_cluster = temp_merged[temp_merged['park'] == park]['k_cluster'].item()
     user_parks = temp_merged[temp_merged['k_cluster'] == user_cluster]['park'].tolist()
     # display(us_map)
-    if sim_or_diff == 'Yes':
+    if sim_or_diff == 'Yes':f
         user_parks = temp_merged[temp_merged['k_cluster'] == user_cluster]['park'].tolist()
         # st.dataframe(user_parks.head())
         # st_folium(us_map, width = 725)
@@ -339,6 +339,15 @@ def activities_filter(lst_activities, lst_cluster, park):
     act_df.drop(columns = 'park', inplace = True)
     act_df.rename(columns = {'score':'Matches'}, inplace = True)
     act_df['Park Name'] = act_df['Park Name'].str.replace('National Park', 'NP')
+    
+    # order activities where user activities are first in list 
+    for i in range(len(act_df)):
+        park_activities = act_df['Activities'].iloc[i]
+        for act in lst_activities:
+            if act in park_activities:
+                park_activities.insert(0, act)
+
+        act_df['Activities'].iloc[i] = list(dict.fromkeys(park_activities))
     act_df = act_df.style.apply(highlight_col, axis = None)
     
     st.dataframe(act_df)
