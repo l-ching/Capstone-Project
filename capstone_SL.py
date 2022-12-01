@@ -222,7 +222,7 @@ def cluster(park, month, sim_or_diff):
     user_cluster = temp_merged[temp_merged['park'] == park]['k_cluster'].item()
     user_parks = temp_merged[temp_merged['k_cluster'] == user_cluster]['park'].tolist()
     # display(us_map)
-    if sim_or_diff == 'Yes':f
+    if sim_or_diff == 'Yes':
         user_parks = temp_merged[temp_merged['k_cluster'] == user_cluster]['park'].tolist()
         # st.dataframe(user_parks.head())
         # st_folium(us_map, width = 725)
