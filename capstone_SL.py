@@ -22,6 +22,8 @@ from yellowbrick.cluster import KElbowVisualizer
 import ast
 pd.options.mode.chained_assignment = None
 
+import googlemaps
+
 
 
 species = pd.read_csv('assets/all_species_112222.csv')
@@ -123,6 +125,8 @@ add_popular_selectbox = st.sidebar.radio(
 )
 
 
+city = st.sidebar.text_input('What city will you be traveling from?')
+state = st.sidebar.text_input('What state will you be traveling from?')
 
 
 
@@ -348,12 +352,18 @@ def activities_filter(lst_activities, lst_cluster, park):
                 park_activities.insert(0, act)
 
         act_df['Activities'].iloc[i] = list(dict.fromkeys(park_activities))
+        
+    parks_return_df = act_df.copy()
+    
     act_df = act_df.style.apply(highlight_col, axis = None)
+    
     
     st.dataframe(act_df)
     st_folium(result_map, width = 725)
     
-    return act_df
+    return act_df, parks_return_df
+
+
 
 
 
@@ -364,4 +374,44 @@ clus_results = cluster(add_park_selectbox, add_month_selectbox, add_similar_sele
 pop_results = attendance_filter(clus_results, add_popular_selectbox, sort_by_attendance = False, drop_percentage=0.33)
 
 # rank on attendance?
-activities_filter(lst_activities, pop_results, add_park_selectbox)
+final = activities_filter(lst_activities, pop_results, add_park_selectbox)
+
+parkList = final[1]
+parkList = list(parkList['Park Name'].unique())
+
+
+
+key = 'AIzaSyB2HgU-FwvbqmOGX6hhDqghFc_kmP5bSX0'
+
+user_input = city + ',' + state
+
+def drive_times(top_5_parks, user_input= user_input):
+    gm = googlemaps.Client(key=key)
+    api_call = gm.distance_matrix(origins=user_input, destinations = top_5_parks, mode = 'driving', units='imperial')
+    time_list = []
+    for i in range(5):
+        try:
+            time_list.append(api_call['rows'][0]['elements'][i]['duration']['text'])
+        except:
+            time_list.append('')
+
+    if time_list == ['', '', '', '', '']:
+        return st.write('Error in getting drive times, try a different input city')
+    else:
+        return time_list
+    
+
+# get top_5_parks from clustering, user input from streamlit
+drive = drive_times(parkList, user_input)
+
+# if type(drive) = 'str':
+#     return drive to streamlit as an error message
+# else:
+#     attach drive to top 5 park dataframe that gets posted to steamlit
+
+
+driveDF = pd.DataFrame()
+driveDF['Park Name'] = parkList
+driveDF['Driving Time'] = drive
+
+st.table(driveDF)
