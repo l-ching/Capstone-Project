@@ -25,20 +25,37 @@ pd.options.mode.chained_assignment = None
 import googlemaps
 
 
+@st.cache(ttl=600)
+def load_species():
+    species = pd.read_csv('assets/all_species_112222.csv')
+    species.drop(species.columns[species.columns.str.contains('unnamed',case = False)],axis = 1, inplace = True)
+    return species
 
-species = pd.read_csv('assets/all_species_112222.csv')
-species.drop(species.columns[species.columns.str.contains('unnamed',case = False)],axis = 1, inplace = True)
+species = load_species()
 
-locations = pd.read_csv('assets/locations_112222.csv')
-locations.drop(locations.columns[locations.columns.str.contains('unnamed',case = False)],axis = 1, inplace = True)
+@st.cache(ttl=600)
+def load_locations():
+    locations = pd.read_csv('assets/locations_112222.csv')
+    locations.drop(locations.columns[locations.columns.str.contains('unnamed',case = False)],axis = 1, inplace = True)
+    return locations
 
-weather = pd.read_csv('assets/NPS_weather_trends_112222.csv')
+locations = load_locations()
+
+@st.cache(ttl=600)
+def load_weather():
+    weather = pd.read_csv('assets/NPS_weather_trends_112222.csv')
+    return weather
+
+weather = load_weather()
+
 
 activities = pd.read_csv('assets/activities.csv')
 activities['cleaned'] = [ast.literal_eval(activities['cleaned'].iloc[i]) for i in range(len(activities))]
 all_activities = [x for sublist in activities.cleaned.tolist()for x in sublist]
 all_activities = set(all_activities)
 all_activities = sorted(all_activities)
+
+
 
 
 
@@ -132,6 +149,7 @@ state = st.sidebar.text_input('What state will you be traveling from?')
 
 
 ###Create dataframe based off of month, park, and similar/different choices###
+@st.cache
 
 def cluster(park, month, sim_or_diff):
 
@@ -242,6 +260,7 @@ def cluster(park, month, sim_or_diff):
 ###Sort by popularity/crowdedness of parks###
 
 
+
 def attendance_filter(park_list, popularity, sort_by_attendance = False, drop_percentage = 0.33):
     park_order_dict = {'Great Smoky Mountains National Park': 1,'Grand Canyon National Park': 2,'Yosemite National Park': 3,'Yellowstone National Park': 4,'Rocky Mountain National Park': 5,'Zion National Park': 6,'Olympic National Park': 7,'Grand Teton National Park': 8,'Acadia National Park': 9,'Cuyahoga Valley National Park': 10,'Glacier National Park': 11,'Indiana Dunes National Park': 12,'Joshua Tree National Park': 13,'Bryce Canyon National Park': 14,'Hawaii Volcanoes National Park': 15,'Hot Springs National Park': 16,'Shenandoah National Park': 17,'Mount Rainier National Park': 18,'Arches National Park': 19,'New River Gorge National Park and Preserve': 20,'Haleakala National Park': 21,'Death Valley National Park': 22,'Sequoia National Park': 23,'Everglades National Park': 24,'Badlands National Park': 25,'Capitol Reef National Park': 26,'Saguaro National Park': 27,'Petrified Forest National Park': 28,'Theodore Roosevelt National Park': 29,'Mammoth Cave National Park': 30,'Wind Cave National Park': 31,'Kings Canyon National Park': 32,'Canyonlands National Park': 33,'Crater Lake National Park': 34,'Biscayne National Park': 35,'Mesa Verde National Park': 36,'White Sands National Park': 37,'Denali National Park': 38,'Glacier Bay National Park': 39,'Lassen Volcanic National Park': 40,'Redwood National Park': 41,'Virgin Islands National Park': 42,'Carlsbad Caverns National Park': 43,'Big Bend National Park': 44,'Great Sand Dunes National Park': 45,'Channel Islands National Park': 46,'Kenai Fjords National Park': 47,'Voyageurs National Park': 48,'Black Canyon of the Gunnison National Park': 49,'Pinnacles National Park': 50,'Guadalupe Mountains National Park': 51,'Congaree National Park': 52,'Great Basin National Park': 53,'Wrangell - St Elias National Park': 54,'Dry Tortugas National Park': 55,'Katmai National Park': 56,'North Cascades National Park': 57,'Isle Royale National Park': 58,'National Park of American Samoa': 59,'Lake Clark National Park': 60,'Gates Of The Arctic National Park': 61,'Kobuk Valley National Park': 62}
     ###new###
@@ -302,6 +321,7 @@ def highlight_col(x):
 
 
 ###activities filter to return final dataframe and map###
+
 
 def activities_filter(lst_activities, lst_cluster, park):
     '''Input user activities, results from cluster fxn, user park, return final park map, activities df'''
@@ -384,6 +404,8 @@ parkList = list(parkList['Park Name'].unique())
 key = 'AIzaSyB2HgU-FwvbqmOGX6hhDqghFc_kmP5bSX0'
 
 user_input = city + ',' + state
+
+
 
 def drive_times(top_5_parks, user_input= user_input):
     gm = googlemaps.Client(key=key)
