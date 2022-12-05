@@ -80,6 +80,7 @@ st.markdown("<h1 style='text-align: center; color: black;'>Welcome to our US Nat
 
 st.markdown("<h3 style='text-align: center; color: black;'>Please select a park you visited and the month you visited from the drop-down menus on the left. If there are specific activities you are in interested in, add them too</h3>", unsafe_allow_html=True)
 
+st.markdown("<h2 style='text-align: center; color: black;'>------------------------------------------------------------- </h2>", unsafe_allow_html=True)
 
 st.markdown("<h5 style='text-align: center; color: black;'>Below are the parks we recommend based on your inputs</h5>", unsafe_allow_html=True)
 
