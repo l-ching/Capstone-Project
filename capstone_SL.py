@@ -4,7 +4,6 @@ import numpy as np
 import folium
 from streamlit_folium import st_folium
 from streamlit_folium import folium_static
-# import matplotlib.pyplot as plt
 import calendar
 import sklearn
 from sklearn.preprocessing import MultiLabelBinarizer
@@ -56,9 +55,6 @@ all_activities = set(all_activities)
 all_activities = sorted(all_activities)
 
 
-
-
-
 def regioncolors(counter):
     if counter['k_cluster'] == 0:
         return 'darkblue'
@@ -72,59 +68,34 @@ def regioncolors(counter):
         return 'darkpurple'
     
 
-
-
 parks = weather.ParkName.unique()
 months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-# [theme]
 base='dark'
-# backgroundColor = 'BAE5F9'
+
 
 ###Intro text###
 
 st.markdown("<h1 style='text-align: center; color: black;'>Welcome to our US National Park Recommender System</h1>", unsafe_allow_html=True)
 
 
-st.markdown("<p style='text-align: center; color: black;'>Please select a park you visited and the month you visited from the drop-down menus on the left. If there are specific activities you are in interested in, add them too</p>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align: center; color: black;'>Please select a park you visited and the month you visited from the drop-down menus on the left. If there are specific activities you are in interested in, add them too</h3>", unsafe_allow_html=True)
 
 
-st.markdown("<h2 style='text-align: center; color: black;'>Here are the parks we recommend for you.</h1>", unsafe_allow_html=True)
+st.markdown("<h5 style='text-align: center; color: black;'>Below are the parks we recommend based on your inputs</h5>", unsafe_allow_html=True)
 
 st.markdown("<p style='text-align: center; color: black;'>The parks with all three activities matched are highlighted in blue</p>", unsafe_allow_html=True)
 
 ###Sidebar creation###
-
 
 add_park_selectbox = st.sidebar.selectbox(
     'What park have you visited in the past?',
     (parks)
 )
 
-
 add_month_selectbox = st.sidebar.selectbox(
     'What month did you visit?',
-    # ('March', 'June', 'October')
     (months)
 )
-
-# add_activity1_selectbox = st.sidebar.selectbox(
-#     'What is your first most important activity?',
-#     (all_activities)
-# )
-
-# add_activity2_selectbox = st.sidebar.selectbox(
-#     'What is your second most important activity?',
-#     (all_activities)
-# )
-
-# add_activity3_selectbox = st.sidebar.selectbox(
-#     'What is your third most important activity?',
-#     (all_activities)
-# )
-
-
-###multi-select instead of individual###
-
 
 select_activities = st.sidebar.multiselect(
     'What are the top three activities you want to do?',
@@ -138,14 +109,12 @@ add_similar_selectbox = st.sidebar.radio(
 
 add_popular_selectbox = st.sidebar.radio(
     'Do you want to avoid crowds?',
-    ("Yes", "I do not mind crowds")
+    ("I do not mind crowds", "Yes")
 )
 
 
 city = st.sidebar.text_input('What city will you be traveling from?')
 state = st.sidebar.text_input('What state will you be traveling from?')
-
-
 
 
 ###Create dataframe based off of month, park, and similar/different choices###
@@ -158,23 +127,21 @@ def cluster(park, month, sim_or_diff):
     # filter for 10 yr avg
     
     park_weather = weather[['ParkName', 'Month', 'Year', 'Temp_Avg_Fahrenheit', 'Prcp_Avg_Inches']]
-    #park_weather = park_weather[park_weather['Year'] == 2021]
 
     # get 10-year averages for each month for each park
     avg_10_yr = park_weather.groupby(['ParkName','Month']).agg('mean').reset_index().drop(columns = 'Year')
     avg_10_yr.rename(columns = {'ParkName':'park', 'Month':'month','Temp_Avg_Fahrenheit':'temp', 'Prcp_Avg_Inches':'prcp'}, inplace = True)
-    #avg_10_yr.drop(columns = 'prcp', inplace = True)
     avg_10_yr['month_name'] = avg_10_yr['month'].apply(lambda x: calendar.month_name[x])
 
     avg_10_yr = avg_10_yr[avg_10_yr['month_name'] == month]
     
     clus_temp = avg_10_yr[['temp', 'prcp']]
-    # st.write(clus_temp)
     X = StandardScaler().fit_transform(clus_temp)
 
     # sort park names for future merging
     temp_merged = avg_10_yr.merge(locations, how = 'left', left_on = 'park', right_on = 'Park Name')
     sort_parks = temp_merged['Park Code'].tolist()
+    
     # new df with only species that are present 
     present_sp = species[species['Occurrence'] == 'Present']
     similarity_df = present_sp[['Park Name', 'Scientific Name', 'Park Code']]
@@ -189,7 +156,6 @@ def cluster(park, month, sim_or_diff):
     code_sp_list = []
     for code in park_codes:
         sp = list(similarity_df[similarity_df['Park Code'] == code]['Scientific Name'])
-        #sp.append(code)
         code_sp_list.append(sp)
 
     # new park-species dataframe
@@ -219,9 +185,7 @@ def cluster(park, month, sim_or_diff):
     visualizer.fit(weather_sp_arr)
     optimal_k = visualizer.elbow_value_
     
-    #plt.close()
     KM = KMeans(n_clusters = optimal_k, random_state = 42)
-    #model = KM.fit(X)
     temp_labels = KM.fit_predict(weather_sp_arr)
 
     labs = np.unique(temp_labels)
@@ -243,39 +207,27 @@ def cluster(park, month, sim_or_diff):
     # print('Silhouette Score:', sil_score)
     user_cluster = temp_merged[temp_merged['park'] == park]['k_cluster'].item()
     user_parks = temp_merged[temp_merged['k_cluster'] == user_cluster]['park'].tolist()
-    # display(us_map)
     if sim_or_diff == 'Yes':
         user_parks = temp_merged[temp_merged['k_cluster'] == user_cluster]['park'].tolist()
-        # st.dataframe(user_parks.head())
-        # st_folium(us_map, width = 725)
     elif sim_or_diff == 'I will try something new':
         user_parks = temp_merged[temp_merged['k_cluster'] != user_cluster]['park'].tolist()
-        # st.dataframe(user_parks.head())
-        # st_folium(us_map, width = 725)
-    # st.dataframe(user_parks)
     return user_parks
-
 
 
 ###Sort by popularity/crowdedness of parks###
 
-
-
 def attendance_filter(park_list, popularity, sort_by_attendance = False, drop_percentage = 0.33):
     park_order_dict = {'Great Smoky Mountains National Park': 1,'Grand Canyon National Park': 2,'Yosemite National Park': 3,'Yellowstone National Park': 4,'Rocky Mountain National Park': 5,'Zion National Park': 6,'Olympic National Park': 7,'Grand Teton National Park': 8,'Acadia National Park': 9,'Cuyahoga Valley National Park': 10,'Glacier National Park': 11,'Indiana Dunes National Park': 12,'Joshua Tree National Park': 13,'Bryce Canyon National Park': 14,'Hawaii Volcanoes National Park': 15,'Hot Springs National Park': 16,'Shenandoah National Park': 17,'Mount Rainier National Park': 18,'Arches National Park': 19,'New River Gorge National Park and Preserve': 20,'Haleakala National Park': 21,'Death Valley National Park': 22,'Sequoia National Park': 23,'Everglades National Park': 24,'Badlands National Park': 25,'Capitol Reef National Park': 26,'Saguaro National Park': 27,'Petrified Forest National Park': 28,'Theodore Roosevelt National Park': 29,'Mammoth Cave National Park': 30,'Wind Cave National Park': 31,'Kings Canyon National Park': 32,'Canyonlands National Park': 33,'Crater Lake National Park': 34,'Biscayne National Park': 35,'Mesa Verde National Park': 36,'White Sands National Park': 37,'Denali National Park': 38,'Glacier Bay National Park': 39,'Lassen Volcanic National Park': 40,'Redwood National Park': 41,'Virgin Islands National Park': 42,'Carlsbad Caverns National Park': 43,'Big Bend National Park': 44,'Great Sand Dunes National Park': 45,'Channel Islands National Park': 46,'Kenai Fjords National Park': 47,'Voyageurs National Park': 48,'Black Canyon of the Gunnison National Park': 49,'Pinnacles National Park': 50,'Guadalupe Mountains National Park': 51,'Congaree National Park': 52,'Great Basin National Park': 53,'Wrangell - St Elias National Park': 54,'Dry Tortugas National Park': 55,'Katmai National Park': 56,'North Cascades National Park': 57,'Isle Royale National Park': 58,'National Park of American Samoa': 59,'Lake Clark National Park': 60,'Gates Of The Arctic National Park': 61,'Kobuk Valley National Park': 62}
-    ###new###
     less_busy_parks ={}
     for key, value in park_order_dict.items():
         if value > 15:
             less_busy_parks[key] = value
-    # print(less_busy_parks)
     less_busy_parks_list = list(less_busy_parks.keys())
  
     full_park_list = list(park_order_dict.keys())
 
     if popularity == 'I do not mind crowds':
         ordered_input_parks = full_park_list
-        # print(ordered_input_parks)
     edit_list = []
     if popularity == 'Yes':
         for park in park_list:
@@ -283,8 +235,6 @@ def attendance_filter(park_list, popularity, sort_by_attendance = False, drop_pe
                 edit_list.append(park)
         ordered_input_parks = edit_list
         
-        # print(ordered_input_parks)
-    #next line always rounds UP the number of parks to drop. We could change it, but I think that's acceptable.
     drop_n_parks = int(len(park_list) * drop_percentage) + 1
     ordered_input_parks = ordered_input_parks[:len(ordered_input_parks)-drop_n_parks]
 
@@ -301,12 +251,7 @@ def park_col(counter):
         return 'blue'
     else:
         return 'gray'
-    #elif counter['score'] == 2:
-    #    return 'darkblue'
-    #elif counter['score'] == 1:
-    #    return 'darkred'
-    #elif counter['score'] == 0:
-    #    return 'darkgreen'
+
     
 
 def highlight_col(x):
@@ -315,7 +260,6 @@ def highlight_col(x):
     #set by condition
     mask = df['Matches'] == 3
     df.loc[mask, :] = 'background-color: lightblue'
-    # df.loc[~mask,:] = 'background-color: ""'
     df.loc[~mask,:] = 'background-color: white'
     return df    
 
@@ -364,7 +308,10 @@ def activities_filter(lst_activities, lst_cluster, park):
     act_df.rename(columns = {'score':'Matches'}, inplace = True)
     act_df['Park Name'] = act_df['Park Name'].str.replace('National Park', 'NP')
     
-    # order activities where user activities are first in list 
+    act_df.index = np.arange(1, len(act_df)+1)
+    
+    
+    ### order activities where user activities are first in list 
     for i in range(len(act_df)):
         park_activities = act_df['Activities'].iloc[i]
         for act in lst_activities:
@@ -372,7 +319,7 @@ def activities_filter(lst_activities, lst_cluster, park):
                 park_activities.insert(0, act)
 
         act_df['Activities'].iloc[i] = list(dict.fromkeys(park_activities))
-        
+      
     parks_return_df = act_df.copy()
     
     act_df = act_df.style.apply(highlight_col, axis = None)
@@ -381,11 +328,7 @@ def activities_filter(lst_activities, lst_cluster, park):
     st.dataframe(act_df)
     st_folium(result_map, width = 725)
     
-    return act_df, parks_return_df
-
-
-
-
+    return act_df, parks_return_df, result_map
 
 
 lst_activities = select_activities
@@ -393,18 +336,16 @@ clus_results = cluster(add_park_selectbox, add_month_selectbox, add_similar_sele
 
 pop_results = attendance_filter(clus_results, add_popular_selectbox, sort_by_attendance = False, drop_percentage=0.33)
 
-# rank on attendance?
+
 final = activities_filter(lst_activities, pop_results, add_park_selectbox)
 
 parkList = final[1]
 parkList = list(parkList['Park Name'].unique())
 
 
-
 key = 'AIzaSyB2HgU-FwvbqmOGX6hhDqghFc_kmP5bSX0'
 
 user_input = city + ',' + state
-
 
 
 def drive_times(top_5_parks, user_input= user_input):
@@ -426,14 +367,10 @@ def drive_times(top_5_parks, user_input= user_input):
 # get top_5_parks from clustering, user input from streamlit
 drive = drive_times(parkList, user_input)
 
-# if type(drive) = 'str':
-#     return drive to streamlit as an error message
-# else:
-#     attach drive to top 5 park dataframe that gets posted to steamlit
-
-
 driveDF = pd.DataFrame()
 driveDF['Park Name'] = parkList
-driveDF['Driving Time'] = drive
+driveDF['Drive Time'] = drive
+driveDF['Drive Time'].replace("", "drive unavailable", inplace=True)
+driveDF.index = np.arange(1, len(driveDF)+1)
 
 st.table(driveDF)
