@@ -105,12 +105,12 @@ select_activities = st.sidebar.multiselect(
 
 add_similar_selectbox = st.sidebar.radio(
     'Do you want to visit a similar park?',
-    ("Yes", "I will try something new")
+    ("Yes", "I'll try something new")
 )
 
 add_popular_selectbox = st.sidebar.radio(
     'Do you want to avoid crowds?',
-    ("I do not mind crowds", "Yes")
+    ("I don't mind crowds", "Yes")
 )
 
 
@@ -210,7 +210,7 @@ def cluster(park, month, sim_or_diff):
     user_parks = temp_merged[temp_merged['k_cluster'] == user_cluster]['park'].tolist()
     if sim_or_diff == 'Yes':
         user_parks = temp_merged[temp_merged['k_cluster'] == user_cluster]['park'].tolist()
-    elif sim_or_diff == 'I will try something new':
+    elif sim_or_diff == "I'll try something new":
         user_parks = temp_merged[temp_merged['k_cluster'] != user_cluster]['park'].tolist()
     return user_parks
 
@@ -227,7 +227,7 @@ def attendance_filter(park_list, popularity, sort_by_attendance = False, drop_pe
  
     full_park_list = list(park_order_dict.keys())
 
-    if popularity == 'I do not mind crowds':
+    if popularity == "I don't mind crowds":
         ordered_input_parks = full_park_list
     edit_list = []
     if popularity == 'Yes':
