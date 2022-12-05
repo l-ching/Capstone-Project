@@ -344,7 +344,7 @@ parkList = final[1]
 parkList = list(parkList['Park Name'].unique())
 
 
-key = 'AIzaSyB2HgU-FwvbqmOGX6hhDqghFc_kmP5bSX0'
+key = st.secrets['api_key']['key']
 
 user_input = city + ',' + state
 
