@@ -380,6 +380,6 @@ driveDF['Drive Time'] = drive
 driveDF['Drive Time'].replace("", "drive unavailable", inplace=True)
 driveDF.index = np.arange(1, len(driveDF)+1)
 
-st.markdown("<p style='text-align: center; color: #213A1B;'>How far you are from each park:</p>", unsafe_allow_html=True)
+st.markdown("<h5 style='text-align: center; color: #213A1B;'>How far you are from each park:</h5>", unsafe_allow_html=True)
 
 st.table(driveDF)
