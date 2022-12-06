@@ -22,6 +22,7 @@ import ast
 pd.options.mode.chained_assignment = None
 
 import googlemaps
+from PIL import Image
 
 
 @st.cache(ttl=600)
@@ -89,6 +90,9 @@ st.markdown("<h5 style='text-align: center; color: #213A1B;'>Below are the parks
 st.markdown("<p style='text-align: center; color: #213A1B;'>The parks with all three activities matched are highlighted in blue</p>", unsafe_allow_html=True)
 
 ###Sidebar creation###
+
+image = Image.open('nps_flag.png')
+st.image(image)
 
 add_park_selectbox = st.sidebar.selectbox(
     'What park have you visited in the past?',
