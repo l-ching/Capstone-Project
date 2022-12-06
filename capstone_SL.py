@@ -75,16 +75,16 @@ base='dark'
 
 ###Intro text###
 
-st.markdown("<h1 style='text-align: center; color: #6F4930;'>Welcome to our US National Park Recommender System</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: #213A1B;'>Welcome to our US National Park Recommender System</h1>", unsafe_allow_html=True)
 
 
-st.markdown("<h3 style='text-align: center; color: #6F4930;'>Please select a park you visited and the month you visited from the drop-down menus on the left. If there are specific activities you are in interested in, add them too</h3>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align: center; color: #213A1B;'>Please select a park you visited and the month you visited from the drop-down menus on the left. If there are specific activities you are in interested in, add them too</h3>", unsafe_allow_html=True)
 
-st.markdown("<h2 style='text-align: center; color: #6F4930;'>------------------------------------------------------------- </h2>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: center; color: #213A1B;'>------------------------------------------------------------- </h2>", unsafe_allow_html=True)
 
-st.markdown("<h5 style='text-align: center; color: #6F4930;'>Below are the parks we recommend based on your inputs</h5>", unsafe_allow_html=True)
+st.markdown("<h5 style='text-align: center; color: #213A1B;'>Below are the parks we recommend based on your inputs</h5>", unsafe_allow_html=True)
 
-st.markdown("<p style='text-align: center; color: #6F4930;'>The parks with all three activities matched are highlighted in blue</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #213A1B;'>The parks with all three activities matched are highlighted in blue</p>", unsafe_allow_html=True)
 
 ###Sidebar creation###
 
