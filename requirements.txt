@@ -8,3 +8,4 @@ streamlit_folium==0.7.0
 yellowbrick==1.5
 googlemaps
 PIL==9.2.0
+Image==9.2.0
