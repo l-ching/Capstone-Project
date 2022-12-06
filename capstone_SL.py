@@ -22,6 +22,7 @@ import ast
 pd.options.mode.chained_assignment = None
 
 import googlemaps
+import PIL
 from PIL import Image
 
 
