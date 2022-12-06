@@ -92,7 +92,7 @@ st.markdown("<p style='text-align: center; color: #213A1B;'>The parks with all t
 ###Sidebar creation###
 
 image = Image.open('assets/nps_flag.png')
-st.image(image)
+st.sidebar.image(image)
 
 add_park_selectbox = st.sidebar.selectbox(
     'What park have you visited in the past?',
