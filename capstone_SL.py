@@ -259,7 +259,7 @@ def highlight_col(x):
     #copy df to new - original data are not changed
     df = x.copy()
     #set by condition
-    mask = df['Matches'] == 3
+    mask = df['Activity Matches'] == 3
     df.loc[mask, :] = 'background-color: lightblue'
     df.loc[~mask,:] = 'background-color: white'
     return df    
@@ -306,7 +306,7 @@ def activities_filter(lst_activities, lst_cluster, park):
         folium.Marker(location_list[point],popup=park_names[point], tooltip = park_names[point], icon=folium.Icon(color=act_loc_df["color"][point], icon_color='white', icon='star', angle=0, prefix='fa')).add_to(result_map)
     
     act_df.drop(columns = 'park', inplace = True)
-    act_df.rename(columns = {'score':'Matches'}, inplace = True)
+    act_df.rename(columns = {'score':'Activity Matches'}, inplace = True)
     act_df['Park Name'] = act_df['Park Name'].str.replace('National Park', 'NP')
     
     act_df.index = np.arange(1, len(act_df)+1)
@@ -320,7 +320,7 @@ def activities_filter(lst_activities, lst_cluster, park):
                 park_activities.insert(0, act)
 
         act_df['Activities'].iloc[i] = list(dict.fromkeys(park_activities))
-      
+    act_df = act_df[['Park Name', 'Activity Matches', 'Activities']]
     parks_return_df = act_df.copy()
     
     act_df = act_df.style.apply(highlight_col, axis = None)
