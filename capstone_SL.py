@@ -36,6 +36,8 @@ species = load_species()
 def load_locations():
     locations = pd.read_csv('assets/locations_112222.csv')
     locations.drop(locations.columns[locations.columns.str.contains('unnamed',case = False)],axis = 1, inplace = True)
+    # fixing NPSA coords
+    locations.loc[locations['Park Code'] == 'VIIS', 'Longitude'] = locations.loc[locations['Park Code'] == 'VIIS', 'Longitude']*-1
     return locations
 
 locations = load_locations()
