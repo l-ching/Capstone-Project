@@ -1,5 +1,5 @@
 # Capstone Project: National Park Recommender System
-![Alt text](assets/20190727_073434.jpg?raw=true "Title")
+![Alt text](assets/20190727_073434.jpg?raw=true "Somewhere near Yosemite")
 ### Authors:
 - Lindsey Ching (lching)
 - Amanda Davis (azdavis)
@@ -27,25 +27,36 @@ Holds the configuration file for Streamlit
 Holds all the data in various files written and used by different notebooks.
 ### Weather_and_trends folder:
 Holds three notebooks for getting the google trends and weather data.
-- **NPS_trends.ipynb**
+- ***NPS_trends.ipynb***
 Collects the google trends data for each park and shows how we determined what offset to add for those results.
-- **NPS_weather_data_join.ipynb**
+- ***NPS_weather_data_join.ipynb***
 Holds all the dictionaries of all the weather stations that were queried for each year of temperature and precipitation data, and allows a user to see specifically which stations are used for the data for each park by year if the user is struggling with insomnia. All that data is then queried and written to csv's at the end.
-- **NPS_weather_debugging.ipynb**
+- ***NPS_weather_debugging.ipynb***
 Shows the process for determining which weather stations have complete or incomplete data for a given year and data type, to then faciliatate looking up the next nearest weather station on the [NOAA](https://www.ncdc.noaa.gov/cdo-web/search;jsessionid=7A87B303411A4E79CD8192D47B05F44D) website and building a complete dictionary to be queried in the weather_data_join notebook.
-### Base Directory files:
-- **activities_scraper.ipynb**
+### Base directory files:
+- `activities_scraper.ipynb`
 Scrapes the listed activities for each park off of the [NPS](nps.gov) website and saves them to csv to then be used by the recommender engine to match park activities to the user's preferences.
-- **analysis.ipynb**
+- `analysis.ipynb`
 Contains analysis of correlation matrix, silhouette scores, optimal number of clusters, and weather variance.
-- **attendance_filter.ipynb**
+- `attendance_filter.ipynb`
 Debugging notebook for filtering out parks based on their attendance numbers and the inputted user's preference.
-- **capstone_SL.py**
+- `capstone_SL.py`
 This runs the Streamlit app. Contains the full end-to-end process of using all the various datasets, and establishing the UI to take the user input and present the results in an intuitive way. This is the combination of the work from many of the other notebooks. As the only .py, it also serves to prove that we're capable of writing scripts and not just notebooks when we're forced to.
-- **park_names_cleaning.ipynb**
+- `park_names_cleaning.ipynb`
 Takes care of a few cleaning operations, most specifically combining King's Canyon and Sequoia National Park data, which is discussed further in our blog post.
-- **rec_sys.ipynb**
+- `rec_sys.ipynb`
 The pipeline of everything the recommender system does. From initial clustering, to filtering based on user creiteria, to even evalutating results to hellp us improve it.
-- **readme.md**
+- `readme.md`
 Forces the user to put up with my dull sense of humor.
 
+
+To run the Streamlit app loacally, you can use the command
+```
+streamlit run [path to the cloned repo]/capstone_SL.py
+```
+However, you will not get the lower dataframe which includes drive times, as you won't have access to the `secrets.toml` which contains our google maps api key...not that we don't trust you.
+
+## Conclusion:
+We made this project out of a love for the outdoors and national parks. We hope it showcases some cool things that we've been working on and some cool ways to explore the uniqueness of each national park. Most of all though, we hope it inspires you to get out and explore the national parks more. We hope that it can give you ideas of new places to visit and explore that you might not have previously considered. And in some small measure, we hope that this project can bring a little more joy and a little more wonder to your life. Now get out there and enjoy our wonderful parks, because as the late John Muir said:
+
+> In every walk with nature one recieves far more than he seeks.
