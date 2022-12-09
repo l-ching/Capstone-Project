@@ -365,7 +365,7 @@ def drive_times(top_5_parks, user_input= user_input):
             time_list.append('')
 
     if time_list == ['', '', '', '', '']:
-        return st.write('Error in getting drive times, try a different input city')
+        return st.text('Error in getting drive times, try a different input city')
     else:
         return time_list
     
