@@ -24,7 +24,7 @@ Most of the files in the repo are not actually used in running the Streamlit app
 ### Streamlit folder:
 Holds the configuration file for Streamlit
 ### Assets folder:
-Holds all the data in various files written and used by different notebooks.
+Holds all the data in various files written and used by different notebooks. The dataset that we started with was publicly available national park attendance data which can be accessed [here](https://irma.nps.gov/STATS/).
 ### Weather_and_trends folder:
 Holds three notebooks for getting the google trends and weather data.
 - `NPS_trends.ipynb`
