@@ -27,11 +27,11 @@ Holds the configuration file for Streamlit
 Holds all the data in various files written and used by different notebooks.
 ### Weather_and_trends folder:
 Holds three notebooks for getting the google trends and weather data.
-- ***NPS_trends.ipynb***
+- `NPS_trends.ipynb`
 Collects the google trends data for each park and shows how we determined what offset to add for those results.
-- ***NPS_weather_data_join.ipynb***
+- `NPS_weather_data_join.ipynb`
 Holds all the dictionaries of all the weather stations that were queried for each year of temperature and precipitation data, and allows a user to see specifically which stations are used for the data for each park by year if the user is struggling with insomnia. All that data is then queried and written to csv's at the end.
-- ***NPS_weather_debugging.ipynb***
+- `NPS_weather_debugging.ipynb`
 Shows the process for determining which weather stations have complete or incomplete data for a given year and data type, to then faciliatate looking up the next nearest weather station on the [NOAA](https://www.ncdc.noaa.gov/cdo-web/search;jsessionid=7A87B303411A4E79CD8192D47B05F44D) website and building a complete dictionary to be queried in the weather_data_join notebook.
 ### Base directory files:
 - `activities_scraper.ipynb`
