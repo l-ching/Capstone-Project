@@ -1,5 +1,5 @@
 # Capstone Project: National Park Recommender System
-
+![Alt text](assets/20190727_073434.jpg?raw=true "Title")
 ### Authors:
 - Lindsey Ching (lching)
 - Amanda Davis (azdavis)
