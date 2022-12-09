@@ -353,7 +353,6 @@ key = st.secrets['api_key']['key']
 
 user_input = city + ',' + state
 
-@st.cache(ttl=600)
 def drive_times(top_5_parks, user_input= user_input):
     gm = googlemaps.Client(key=key)
     api_call = gm.distance_matrix(origins=user_input, destinations = top_5_parks, mode = 'driving', units='imperial')
@@ -365,7 +364,7 @@ def drive_times(top_5_parks, user_input= user_input):
             time_list.append('')
 
     if time_list == ['', '', '', '', '']:
-        return st.text('Error in getting drive times, try a different input city')
+        return st.write('Error in getting drive times, try a different input city')
     else:
         return time_list
     
