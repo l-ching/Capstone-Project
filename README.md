@@ -39,8 +39,6 @@ Shows the process for determining which weather stations have complete or incomp
 Scrapes the listed activities for each park off of the [NPS](nps.gov) website and saves them to csv to then be used by the recommender engine to match park activities to the user's preferences.
 - `analysis.ipynb`
 Contains analysis of correlation matrix, silhouette scores, optimal number of clusters, and weather variance.
-- `attendance_filter.ipynb`
-Debugging notebook for filtering out parks based on their attendance numbers and the inputted user's preference.
 - `capstone_SL.py`
 This runs the Streamlit app. Contains the full end-to-end process of using all the various datasets, and establishing the UI to take the user input and present the results in an intuitive way. This is the combination of the work from many of the other notebooks. As the only `.py` it also serves to prove that we're capable of writing scripts, despite our campaign to convert the whole world to ipython notebooks.
 - `park_names_cleaning.ipynb`
