@@ -277,7 +277,6 @@ def highlight_col(x):
 
 ###activities filter to return final dataframe and map###
 
-@st.experimental_memo
 def activities_filter(lst_activities, lst_cluster, park):
     '''Input user activities, results from cluster fxn, user park, return final park map, activities df'''
     act_df = activities.merge(locations, how = 'left', left_on = 'park', right_on = 'Park Code')[['park', 'Park Name','cleaned']]
