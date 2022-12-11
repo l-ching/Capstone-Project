@@ -375,7 +375,7 @@ def drive_times(top_5_parks, user_input= user_input):
 
 # get top_5_parks from clustering, user input from streamlit
 # @st.cache(ttl=600)
-@st.experimental_memo
+
 drive = drive_times(parkList, user_input)
 
 driveDF = pd.DataFrame()
